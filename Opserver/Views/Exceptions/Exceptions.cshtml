@@ -49,6 +49,9 @@
     <div class="js-exception-counts">
         @{ Html.RenderPartial("Exceptions.Navigation", Model); }
     </div>
+    <div class="exception-filters">
+        @{ Html.RenderPartial("Exceptions.Filters", Model); }
+    </div>
     }
 </div>
 @if (anyLoaded)
