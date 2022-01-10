@@ -34,7 +34,7 @@ namespace StackExchange.Opserver.Controllers
         private Guid? CurrentId;
         private Guid? CurrentSimilarId;
         private ExceptionSorts CurrentSort;
-        private HashSet<ExceptionLogLevel> CurrentExceptionLogLevels = new HashSet<ExceptionLogLevel>() { ExceptionLogLevel.Critical, ExceptionLogLevel.Error };
+        private HashSet<ExceptionLogLevel> CurrentExceptionLogLevels;
         private static readonly HashSet<ExceptionLogLevel> DefaultExceptionLogLevels = new HashSet<ExceptionLogLevel>() { ExceptionLogLevel.Critical, ExceptionLogLevel.Error };
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
