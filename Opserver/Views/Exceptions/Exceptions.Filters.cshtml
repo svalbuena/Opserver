@@ -1,4 +1,6 @@
-﻿<form class="navbar-form">
+﻿@model StackExchange.Opserver.Views.Exceptions.ExceptionsModel
+
+<form class="navbar-form" id="exceptionFiltersForm">
     <div class="form-group">
         <div class="dropdown">
             <button class="btn btn-xs btn-default dropdown-toggle" type="button" id="logLevelDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -6,30 +8,17 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="logLevelDropdown" id="logLevelFilter">
-                <li>
-                    <input class="form-check-input" type="checkbox" id="criticalLogLevelCheckbox" value="critical">
-                    <label class="form-check-label" for="inlineCheckbox1">Critical</label>
-                </li>
-                <li>
-                    <input class="form-check-input" type="checkbox" id="errorLogLevelCheckbox" value="error">
-                    <label class="form-check-label" for="inlineCheckbox2">Error</label>
-                </li>
-                <li>
-                    <input class="form-check-input" type="checkbox" id="warningLogLevelCheckbox" value="warning">
-                    <label class="form-check-label" for="inlineCheckbox3">Warning</label>
-                </li>
-                <li>
-                    <input class="form-check-input" type="checkbox" id="infoLogLevelCheckbox" value="info">
-                    <label class="form-check-label" for="inlineCheckbox4">Info</label>
-                </li>
-                <li>
-                    <input class="form-check-input" type="checkbox" id="debugLogLevelCheckbox" value="debug">
-                    <label class="form-check-label" for="inlineCheckbox5">Debug</label>
-                </li>
-                <li>
-                    <input class="form-check-input" type="checkbox" id="traceLogLevelCheckbox" value="trace">
-                    <label class="form-check-label" for="inlineCheckbox6">Trace</label>
-                </li>
+                @foreach (var logLevel in Model.LogLevels)
+                {
+                    <li>
+                        @{ 
+                            string logLevelCheckboxId = logLevel.GetName() + "LogLevelCheckbox";
+                            bool logLevelChecked = Model.SelectedLogLevels.Contains(logLevel);
+                        }
+                        <input class="form-check-input" type="checkbox" id="@logLevelCheckboxId" value="@logLevel.GetName()" @(logLevelChecked ? "checked" : "")>
+                        <label class="form-check-label" for="@logLevelCheckboxId">@logLevel.GetName()</label>
+                    </li>
+                }
             </ul>
         </div>
     </div>

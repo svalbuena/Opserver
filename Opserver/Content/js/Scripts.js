@@ -1438,6 +1438,21 @@ Status.Exceptions = (function () {
 
     }
 
+    function getSelectedLogLevels() {
+        return $('#logLevelFilter input:checked')
+            .map(function (index, element) { return element.value; })
+            .get();
+    }
+
+    $(document).on('submit', '#exceptionFiltersForm', function (event) {
+        let selectedLogLevels = getSelectedLogLevels();
+        let searchParams = new URLSearchParams(window.location.search);
+        searchParams.set("logLevels", selectedLogLevels.join(','));
+        let urlWithoutSearchParams = window.location.href.split('?')[0];
+        location.href = urlWithoutSearchParams + '?' + searchParams.toString();
+        event.preventDefault();
+    });
+
     return {
         init: init
     };

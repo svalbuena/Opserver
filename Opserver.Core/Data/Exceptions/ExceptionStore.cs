@@ -171,6 +171,7 @@ Select ApplicationName as Name,
             public Guid? StartAt { get; set; }
             public ExceptionSorts Sort { get; set; }
             public Guid? Id { get; set; }
+            public HashSet<ExceptionLogLevel> LogLevels { get; set; } = new HashSet<ExceptionLogLevel>();
 
             public override int GetHashCode()
             {
@@ -185,6 +186,7 @@ Select ApplicationName as Name,
                 hashCode = (hashCode * -1521134295) + EqualityComparer<DateTime?>.Default.GetHashCode(EndDate);
                 hashCode = (hashCode * -1521134295) + EqualityComparer<Guid?>.Default.GetHashCode(StartAt);
                 hashCode = (hashCode * -1521134295) + EqualityComparer<Guid?>.Default.GetHashCode(Id);
+                hashCode = (hashCode * -1521134295) + EqualityComparer<HashSet<ExceptionLogLevel>>.Default.GetHashCode(LogLevels);
                 return (hashCode * -1521134295) + Sort.GetHashCode();
             }
         }
@@ -226,6 +228,7 @@ Select e.Id,
 	   e.ErrorHash,
 	   e.DuplicateCount,
 	   e.DeletionDate,
+       e.LogLevel,
 	   ROW_NUMBER() Over(").Append(GetSortString(search.Sort)).Append(@") rowNum
   From ").Append(TableName).AppendLine(" e");
 
@@ -257,6 +260,10 @@ Select e.Id,
             if (search.Id.HasValue)
             {
                 AddClause("Id = @Id");
+            }
+            if (search.LogLevels.Count > 0)
+            {
+                AddClause(string.Join(" OR ", search.LogLevels.Select(logLevel => "LogLevel = " + (short) logLevel)));
             }
             if (mode == QueryMode.Delete)
             {
@@ -356,6 +363,10 @@ Select e.Id,
                     return " Order By IsNull(DuplicateCount, 1) Desc, CreationDate Desc";
                 case ExceptionSorts.TimeAsc:
                     return " Order By CreationDate";
+                case ExceptionSorts.LevelAsc:
+                    return " Order By LogLevel, CreationDate Desc";
+                case ExceptionSorts.LevelDesc:
+                    return " Order By LogLevel Desc, CreationDate Desc ";
                 //case ExceptionSorts.TimeDesc:
                 default:
                     return " Order By CreationDate Desc";

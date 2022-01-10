@@ -9,6 +9,7 @@ using StackExchange.Opserver.Models;
 using StackExchange.Opserver.Views.Exceptions;
 using System.Threading.Tasks;
 using StackExchange.Opserver.Data.Jira;
+using StackExchange.Exceptional;
 
 namespace StackExchange.Opserver.Controllers
 {
@@ -33,6 +34,8 @@ namespace StackExchange.Opserver.Controllers
         private Guid? CurrentId;
         private Guid? CurrentSimilarId;
         private ExceptionSorts CurrentSort;
+        private HashSet<ExceptionLogLevel> CurrentExceptionLogLevels = new HashSet<ExceptionLogLevel>() { ExceptionLogLevel.Critical, ExceptionLogLevel.Error };
+        private static readonly HashSet<ExceptionLogLevel> DefaultExceptionLogLevels = new HashSet<ExceptionLogLevel>() { ExceptionLogLevel.Critical, ExceptionLogLevel.Error };
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -42,6 +45,7 @@ namespace StackExchange.Opserver.Controllers
             CurrentId = Request.Params["id"].HasValue() && Guid.TryParse(Request.Params["id"], out var guid) ? guid : (Guid?)null;
             CurrentSimilarId = Request.Params["similar"].HasValue() && Guid.TryParse(Request.Params["similar"], out var similarGuid) ? similarGuid : (Guid?)null;
             Enum.TryParse(Request.Params["sort"], out CurrentSort);
+            CurrentExceptionLogLevels = GetCurrentExceptionLogLevels(Request);
 
             if (CurrentLog.HasValue())
             {
@@ -69,6 +73,29 @@ namespace StackExchange.Opserver.Controllers
             base.OnActionExecuting(filterContext);
         }
 
+        private HashSet<ExceptionLogLevel> GetCurrentExceptionLogLevels(HttpRequestBase request)
+        {
+            if (String.IsNullOrEmpty(request.Params["logLevels"]))
+            {
+                if (Request.Params["q"].HasValue())
+                {
+                    //If user is searching a specific word then don't apply LogLevel filter to avoid hiding potential results
+                    return new HashSet<ExceptionLogLevel>();
+                }
+                return DefaultExceptionLogLevels;
+            }
+            HashSet<ExceptionLogLevel> logLevels = new HashSet<ExceptionLogLevel>();
+            foreach (string logLevelString in request.Params["logLevels"].Split(','))
+            {
+                ExceptionLogLevel logLevel;
+                if (Enum.TryParse<ExceptionLogLevel>(logLevelString, out logLevel))
+                {
+                    logLevels.Add(logLevel);
+                }
+            }
+            return logLevels;
+        }
+
         // TODO: Move entirely to model binder
         private async Task<ExceptionStore.SearchParams> GetSearchAsync()
         {
@@ -77,7 +104,8 @@ namespace StackExchange.Opserver.Controllers
                 Group = CurrentGroup,
                 Log = CurrentLog,
                 Sort = CurrentSort,
-                Id = CurrentId
+                Id = CurrentId,
+                LogLevels = CurrentExceptionLogLevels
             };
 
             if (Request.Params["q"].HasValue())
@@ -117,7 +145,8 @@ namespace StackExchange.Opserver.Controllers
                 Group = group,
                 Log = log,
                 Sort = CurrentSort,
-                Errors = errors
+                Errors = errors,
+                SelectedLogLevels = CurrentExceptionLogLevels
             };
         }
 

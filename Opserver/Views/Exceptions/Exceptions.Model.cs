@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
 using StackExchange.Exceptional;
+using StackExchange.Opserver.Controllers;
 using StackExchange.Opserver.Data.Exceptions;
 
 namespace StackExchange.Opserver.Views.Exceptions
@@ -22,6 +23,9 @@ namespace StackExchange.Opserver.Views.Exceptions
         public ExceptionStore.SearchParams SearchParams { get; set; }
         public Error Exception { get; set; }
         public List<Error> Errors { get; set; }
+
+        public List<ExceptionLogLevel> LogLevels = new List<ExceptionLogLevel>() { ExceptionLogLevel.Critical, ExceptionLogLevel.Error, ExceptionLogLevel.Warning, ExceptionLogLevel.Info, ExceptionLogLevel.Debug, ExceptionLogLevel.Trace };
+        public HashSet<ExceptionLogLevel> SelectedLogLevels { get; set; } = new HashSet<ExceptionLogLevel>();
 
         public bool ShowAll => Group == null && Log == null;
         private int? _shownCount;
@@ -80,6 +84,11 @@ namespace StackExchange.Opserver.Views.Exceptions
                 if (Log != null) result["log"] = Log.Name;
                 return result;
             }
+        }
+
+        public string CommaJoinedSelectedLogLevels()
+        {
+            return string.Join(",", SelectedLogLevels.Select(logLevel => logLevel.ToString()));
         }
     }
 }
