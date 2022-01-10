@@ -1053,7 +1053,8 @@ Status.Exceptions = (function () {
             store: options.store,
             group: options.group,
             log: options.log,
-            sort: options.sort
+            sort: options.sort,
+            logLevels: options.logLevels
         };
 
         // TODO: Set refresh params
