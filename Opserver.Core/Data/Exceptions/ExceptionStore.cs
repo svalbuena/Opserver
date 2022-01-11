@@ -172,6 +172,8 @@ Select ApplicationName as Name,
             public ExceptionSorts Sort { get; set; }
             public Guid? Id { get; set; }
             public HashSet<ExceptionLogLevel> LogLevels { get; set; } = new HashSet<ExceptionLogLevel>();
+            public string SimilarHost { get; set; }
+            public string SimilarUrl { get; set; }
 
             public override int GetHashCode()
             {
@@ -187,6 +189,8 @@ Select ApplicationName as Name,
                 hashCode = (hashCode * -1521134295) + EqualityComparer<Guid?>.Default.GetHashCode(StartAt);
                 hashCode = (hashCode * -1521134295) + EqualityComparer<Guid?>.Default.GetHashCode(Id);
                 hashCode = (hashCode * -1521134295) + EqualityComparer<HashSet<ExceptionLogLevel>>.Default.GetHashCode(LogLevels);
+                hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(SimilarHost);
+                hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(SimilarUrl);
                 return (hashCode * -1521134295) + Sort.GetHashCode();
             }
         }
@@ -263,7 +267,15 @@ Select e.Id,
             }
             if (search.LogLevels.Count > 0)
             {
-                AddClause(string.Join(" OR ", search.LogLevels.Select(logLevel => "LogLevel = " + (short) logLevel)));
+                AddClause("(" + string.Join(" OR ", search.LogLevels.Select(logLevel => "LogLevel = " + (short) logLevel)) + ")");
+            }
+            if (search.SimilarHost.HasValue())
+            {
+                AddClause("Host Like @SimilarHost");
+            }
+            if (search.SimilarUrl.HasValue())
+            {
+                AddClause("Url Like @SimilarUrl");
             }
             if (mode == QueryMode.Delete)
             {
@@ -300,7 +312,9 @@ Select e.Id,
                 query = "%" + search.SearchQuery + "%",
                 search.StartAt,
                 search.Count,
-                search.Id
+                search.Id,
+                SimilarHost = "%" + search.SimilarHost + "%",
+                SimilarUrl = "%" + search.SimilarUrl + "%"
             });
         }
 

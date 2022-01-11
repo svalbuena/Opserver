@@ -36,6 +36,8 @@ namespace StackExchange.Opserver.Controllers
         private ExceptionSorts CurrentSort;
         private HashSet<ExceptionLogLevel> CurrentExceptionLogLevels;
         private static readonly HashSet<ExceptionLogLevel> DefaultExceptionLogLevels = new HashSet<ExceptionLogLevel>() { ExceptionLogLevel.Critical, ExceptionLogLevel.Error };
+        private string CurrentSimilarHost;
+        private string CurrentSimilarUrl;
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -46,6 +48,8 @@ namespace StackExchange.Opserver.Controllers
             CurrentSimilarId = Request.Params["similar"].HasValue() && Guid.TryParse(Request.Params["similar"], out var similarGuid) ? similarGuid : (Guid?)null;
             Enum.TryParse(Request.Params["sort"], out CurrentSort);
             CurrentExceptionLogLevels = GetCurrentExceptionLogLevels(Request);
+            CurrentSimilarHost = Request.Params["similarHost"];
+            CurrentSimilarUrl = Request.Params["similarUrl"];
 
             if (CurrentLog.HasValue())
             {
@@ -105,7 +109,9 @@ namespace StackExchange.Opserver.Controllers
                 Log = CurrentLog,
                 Sort = CurrentSort,
                 Id = CurrentId,
-                LogLevels = CurrentExceptionLogLevels
+                LogLevels = CurrentExceptionLogLevels,
+                SimilarHost = CurrentSimilarHost,
+                SimilarUrl = CurrentSimilarUrl
             };
 
             if (Request.Params["q"].HasValue())
@@ -146,7 +152,9 @@ namespace StackExchange.Opserver.Controllers
                 Log = log,
                 Sort = CurrentSort,
                 Errors = errors,
-                SelectedLogLevels = CurrentExceptionLogLevels
+                SelectedLogLevels = CurrentExceptionLogLevels,
+                SimilarHost = CurrentSimilarHost,
+                SimilarUrl = CurrentSimilarUrl
             };
         }
 

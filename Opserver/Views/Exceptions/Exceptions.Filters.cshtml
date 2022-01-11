@@ -2,6 +2,12 @@
 
 <form class="navbar-form" id="exceptionFiltersForm">
     <div class="form-group">
+        <input id="hostFilterInput" type="text" class="form-control input-sm" placeholder="Filter by Host" value="@(Model.SimilarHost == null ? "" : Model.SimilarHost)">
+    </div>
+    <div class="form-group">
+        <input id="urlFilterInput" type="text" class="form-control input-sm" placeholder="Filter by Url" value="@(Model.SimilarUrl == null ? "" : Model.SimilarUrl)">
+    </div>
+    <div class="form-group">
         <div class="dropdown">
             <button class="btn btn-xs btn-default dropdown-toggle" type="button" id="logLevelDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 Log Level
@@ -11,7 +17,7 @@
                 @foreach (var logLevel in Model.LogLevels)
                 {
                     <li>
-                        @{ 
+                        @{
                             string logLevelCheckboxId = logLevel.GetName() + "LogLevelCheckbox";
                             bool logLevelChecked = Model.SelectedLogLevels.Contains(logLevel);
                         }

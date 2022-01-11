@@ -5,7 +5,7 @@
 }
 @if (Model.Groups.Count > 1)
 {
-    <a href="@Url.Action(nameof(ExceptionsController.Exceptions), new { store = Model.Store.Name, logLevels = Model.CommaJoinedSelectedLogLevels() })" title="View All" class="btn btn-xs@(Model.ShowAll ? " btn-primary" : null)">View All</a>
+    <a href="@Url.Action(nameof(ExceptionsController.Exceptions), new { store = Model.Store.Name, logLevels = Model.CommaJoinedSelectedLogLevels(), similarHost = Model.SimilarHost, similarUrl = Model.SimilarUrl })" title="View All" class="btn btn-xs@(Model.ShowAll ? " btn-primary" : null)">View All</a>
 }
 @foreach (var g in Model.Groups)
 {
@@ -17,7 +17,7 @@
     var btnClass = active ? "btn-primary" : "";
     var app = Model.Log != null && g.Applications.Contains(Model.Log) ? Model.Log : null;
     <div class="btn-group dropdown">
-        <a href="@Url.Action(nameof(ExceptionsController.Exceptions), new { store = Model.Store.Name, group = g.Name, logLevels = Model.CommaJoinedSelectedLogLevels() })" class="btn btn-xs @btnClass">
+        <a href="@Url.Action(nameof(ExceptionsController.Exceptions), new { store = Model.Store.Name, group = g.Name, logLevels = Model.CommaJoinedSelectedLogLevels(), similarHost = Model.SimilarHost, similarUrl = Model.SimilarUrl })" class="btn btn-xs @btnClass">
             @g.Name
             @if (app != null)
             {
@@ -36,7 +36,7 @@
             @foreach (var a in g.Applications)
                 {
                 <li class="@(Model.Log?.Name == a.Name || g.Applications.Count == 1 ? " active" : null)">
-                    <a href="@Url.Action(nameof(ExceptionsController.Exceptions), new { store = Model.Store.Name, group = g.Name, log = a.Name, logLevels = Model.CommaJoinedSelectedLogLevels()})">
+                    <a href="@Url.Action(nameof(ExceptionsController.Exceptions), new { store = Model.Store.Name, group = g.Name, log = a.Name, logLevels = Model.CommaJoinedSelectedLogLevels(), similarHost = Model.SimilarHost, similarUrl = Model.SimilarUrl })">
                         @a.Name
                         <span class="badge js-exception-total" data-name="@g.Name-@a.Name">@a.ExceptionCount.ToComma()</span>
                     </a>

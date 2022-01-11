@@ -26,6 +26,8 @@ namespace StackExchange.Opserver.Views.Exceptions
 
         public List<ExceptionLogLevel> LogLevels = new List<ExceptionLogLevel>() { ExceptionLogLevel.Critical, ExceptionLogLevel.Error, ExceptionLogLevel.Warning, ExceptionLogLevel.Info, ExceptionLogLevel.Debug, ExceptionLogLevel.Trace };
         public HashSet<ExceptionLogLevel> SelectedLogLevels { get; set; } = new HashSet<ExceptionLogLevel>();
+        public string SimilarHost { get; set; }
+        public string SimilarUrl { get; set; }
 
         public bool ShowAll => Group == null && Log == null;
         private int? _shownCount;
