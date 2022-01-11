@@ -26,7 +26,8 @@
                 loadMore: @(Model.LoadAsyncSize),
                 enablePreviews: @Current.Settings.Exceptions.EnablePreviews.ToJson(),
                 showDeleted: @Model.ShowDeleted.ToJson(),
-                search: @Model.Search.ToJson()
+                search: @Model.Search.ToJson(),
+                logLevels: '@Model.CommaJoinedSelectedLogLevels()'
             });
         });
     </script>
