@@ -44,8 +44,8 @@ namespace Opserver.Controllers
             CurrentSimilarId = GetParam("similar").HasValue() && Guid.TryParse(GetParam("similar"), out var similarGuid) ? similarGuid : (Guid?)null;
             Enum.TryParse(GetParam("sort"), out CurrentSort);
             CurrentExceptionLogLevels = GetCurrentExceptionLogLevels();
-            CurrentHost = GetParam("host");
-            CurrentUrl = GetParam("url");
+            CurrentHost = GetParam("host")?.Trim();
+            CurrentUrl = GetParam("url")?.Trim();
 
             if (CurrentLog.HasValue())
             {

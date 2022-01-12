@@ -1447,12 +1447,20 @@ Status.Exceptions = (function () {
             .get();
     }
 
+    function getSanitzedInputValue(inputId) {
+        let inputValue = $(inputId).val();
+        if (inputValue === null) {
+            return '';
+        }
+        return inputValue.trim();
+    }
+
     function getHostFilterValue() {
-        return $('#hostFilterInput').val();
+        return getSanitzedInputValue('#hostFilterInput');
     }
 
     function getUrlFilterValue() {
-        return $('#urlFilterInput').val();
+        return getSanitzedInputValue('#urlFilterInput');
     }
 
     $(document).on('submit', '#exceptionFiltersForm', function (event) {
@@ -1464,13 +1472,13 @@ Status.Exceptions = (function () {
             searchParams.set("logLevels", selectedLogLevels.join(','));
         }
         let host = getHostFilterValue();
-        if (host === null || host === '') {
+        if (host === '') {
             searchParams.delete("host");
         } else {
             searchParams.set("host", host);
         }
         let url = getUrlFilterValue();
-        if (url === null || url === '') {
+        if (url === '') {
             searchParams.delete("url");
         } else {
             searchParams.set("url", url);
@@ -1483,6 +1491,10 @@ Status.Exceptions = (function () {
             location.href = urlWithoutSearchParams + '?' + searchParams.toString();
         }
         event.preventDefault();
+    });
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
     });
 
     return {

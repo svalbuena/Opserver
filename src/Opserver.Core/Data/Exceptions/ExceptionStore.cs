@@ -313,8 +313,8 @@ Select e.Id,
                 search.StartAt,
                 search.Count,
                 search.Id,
-                search.Host,
-                search.Url
+                Host = search.Host?.Replace('*', '%'),
+                Url = search.Url?.Replace('*', '%')
             });
         }
 
