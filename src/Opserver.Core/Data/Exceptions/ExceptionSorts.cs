@@ -19,6 +19,8 @@
         MachineNameAsc = 14,
         MachineNameDesc = 15,
         CountAsc = 16,
-        CountDesc = 17
+        CountDesc = 17,
+        LevelAsc = 18,
+        LevelDesc = 19
     }
 }

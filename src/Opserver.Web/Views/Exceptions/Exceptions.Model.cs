@@ -24,6 +24,9 @@ namespace Opserver.Views.Exceptions
         public Error Exception { get; set; }
         public List<Error> Errors { get; set; }
 
+        public List<ExceptionLogLevel> LogLevels = new List<ExceptionLogLevel>() { ExceptionLogLevel.Critical, ExceptionLogLevel.Error, ExceptionLogLevel.Warning, ExceptionLogLevel.Info, ExceptionLogLevel.Debug, ExceptionLogLevel.Trace };
+        public HashSet<ExceptionLogLevel> SelectedLogLevels { get; set; } = new HashSet<ExceptionLogLevel>();
+
         public bool ShowAll => Group == null && Log == null;
         private int? _shownCount;
         public int ShownCount => _shownCount ??= Errors.Sum(e => e.DuplicateCount) ?? 0;
@@ -81,6 +84,11 @@ namespace Opserver.Views.Exceptions
                 if (Log != null) result["log"] = Log.Name;
                 return result;
             }
+        }
+
+        public string CommaJoinedSelectedLogLevels()
+        {
+            return string.Join(",", SelectedLogLevels.Select(logLevel => logLevel.ToString()));
         }
     }
 }

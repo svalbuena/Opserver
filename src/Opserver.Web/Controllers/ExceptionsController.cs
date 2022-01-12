@@ -28,6 +28,8 @@ namespace Opserver.Controllers
         private Guid? CurrentId;
         private Guid? CurrentSimilarId;
         private ExceptionSorts CurrentSort;
+        private HashSet<ExceptionLogLevel> CurrentExceptionLogLevels;
+        private static readonly HashSet<ExceptionLogLevel> DefaultExceptionLogLevels = new HashSet<ExceptionLogLevel>() { ExceptionLogLevel.Critical, ExceptionLogLevel.Error };
 
         public ExceptionsController(ExceptionsModule module, IOptions<OpserverSettings> settings) : base(module, settings) { }
 
@@ -39,6 +41,7 @@ namespace Opserver.Controllers
             CurrentId = GetParam("id").HasValue() && Guid.TryParse(GetParam("id"), out var guid) ? guid : (Guid?)null;
             CurrentSimilarId = GetParam("similar").HasValue() && Guid.TryParse(GetParam("similar"), out var similarGuid) ? similarGuid : (Guid?)null;
             Enum.TryParse(GetParam("sort"), out CurrentSort);
+            CurrentExceptionLogLevels = GetCurrentExceptionLogLevels();
 
             if (CurrentLog.HasValue())
             {
@@ -73,7 +76,8 @@ namespace Opserver.Controllers
                 Group = CurrentGroup,
                 Log = CurrentLog,
                 Sort = CurrentSort,
-                Id = CurrentId
+                Id = CurrentId,
+                LogLevels = CurrentExceptionLogLevels
             };
 
             if (GetParam("q").HasValue())
@@ -133,8 +137,32 @@ namespace Opserver.Controllers
                 Group = group,
                 Log = log,
                 Sort = CurrentSort,
-                Errors = errors
+                Errors = errors,
+                SelectedLogLevels = CurrentExceptionLogLevels
             };
+        }
+
+        private HashSet<ExceptionLogLevel> GetCurrentExceptionLogLevels()
+        {
+            string logLevelsParam = GetParam("logLevels");
+            if (!logLevelsParam.HasValue())
+            {
+                if (GetParam("q").HasValue())
+                {
+                    //If user is searching a specific word then don't apply LogLevel filter to avoid hiding potential results
+                    return new HashSet<ExceptionLogLevel>();
+                }
+                return DefaultExceptionLogLevels;
+            }
+            HashSet<ExceptionLogLevel> logLevels = new HashSet<ExceptionLogLevel>();
+            foreach (string logLevelString in logLevelsParam.Split(','))
+            {
+                if (Enum.TryParse<ExceptionLogLevel>(logLevelString, out var logLevel))
+                {
+                    logLevels.Add(logLevel);
+                }
+            }
+            return logLevels;
         }
 
         [DefaultRoute("exceptions")]

@@ -36,6 +36,7 @@
                 <th class="@(showActions ? "" : "hidden")"></th>
                 <th>@HeaderLink("Time", ExceptionSorts.TimeDesc)</th>
                 <th>@if(Model.Log != null) {HeaderLink("Type", ExceptionSorts.TypeAsc);} else {HeaderLink("App", ExceptionSorts.AppAsc);}</th>
+                <th>@HeaderLink("Level", ExceptionSorts.LevelDesc)</th>
                 <th>@HeaderLink("Error", ExceptionSorts.MessageAsc)</th>
                 <th>@HeaderLink("Url", ExceptionSorts.UrlAsc)</th>
                 <th>@HeaderLink("Remote IP", ExceptionSorts.IPAddressAsc)</th>
