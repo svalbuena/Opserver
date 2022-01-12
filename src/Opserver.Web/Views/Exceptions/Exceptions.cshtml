@@ -24,7 +24,8 @@
                 loadMore: @(Model.LoadAsyncSize),
                 enablePreviews: @Module.Settings.EnablePreviews.ToJson(),
                 showDeleted: @Model.ShowDeleted.ToJson(),
-                search: @Model.Search.ToJson()
+                search: @Model.Search.ToJson(),
+                logLevels: '@Model.CommaJoinedSelectedLogLevels()'
             });
         });
     </script>
@@ -46,6 +47,9 @@
     {
     <div class="js-exception-counts">
         <partial name="Exceptions.Navigation" model="Model" />
+    </div>
+    <div class="exception-filters">
+        <partial name="Exceptions.Filters" model="Model" />
     </div>
     }
 </div>

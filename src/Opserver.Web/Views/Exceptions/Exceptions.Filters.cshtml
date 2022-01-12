@@ -1,0 +1,26 @@
+﻿@model ExceptionsModel
+
+<form class="navbar-form" id="exceptionFiltersForm">
+    <div class="form-group">
+        <div class="dropdown">
+            <button class="btn btn-xs btn-default dropdown-toggle" type="button" id="logLevelDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Log Level
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="logLevelDropdown" id="logLevelFilter">
+                @foreach (var logLevel in Model.LogLevels)
+                {
+                    <li>
+                        @{ 
+                            string logLevelCheckboxId = logLevel.GetName() + "LogLevelCheckbox";
+                            bool logLevelChecked = Model.SelectedLogLevels.Contains(logLevel);
+                        }
+                        <input class="form-check-input" type="checkbox" id="@logLevelCheckboxId" value="@logLevel.GetName()" @(logLevelChecked ? "checked" : "")>
+                        <label class="form-check-label" for="@logLevelCheckboxId">@logLevel.GetName()</label>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-xs btn-default">Apply</button>
+</form>

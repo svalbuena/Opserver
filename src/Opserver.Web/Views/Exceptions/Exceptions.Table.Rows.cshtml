@@ -63,6 +63,7 @@
                 <a href="~/exceptions?log=@e.ApplicationName.UrlEncode()&store=@Model.Store.Name.UrlEncode()">@e.ApplicationName</a>
             }
         </td>
+        <td>@e.ExceptionLevel().GetName()</td>
         <td>
             <a class="text-wordbreak js-exception-link @(e.Message.StartsWith("Failed to retrieve error log:") ? "bad-error" : null)" href="~/exceptions/detail?id=@e.GUID&log=@e.ApplicationName.UrlEncode()&store=@Model.Store.Name.UrlEncode()">
                 @(e.Message.TruncateWithEllipsis(110))
