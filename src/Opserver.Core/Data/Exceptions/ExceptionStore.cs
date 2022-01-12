@@ -172,6 +172,8 @@ Select ApplicationName as Name,
             public ExceptionSorts Sort { get; set; }
             public Guid? Id { get; set; }
             public HashSet<ExceptionLogLevel> LogLevels { get; set; } = new HashSet<ExceptionLogLevel>();
+            public string Host { get; set; }
+            public string Url { get; set; }
 
             public override int GetHashCode()
             {
@@ -187,6 +189,8 @@ Select ApplicationName as Name,
                 hashCode = (hashCode * -1521134295) + EqualityComparer<Guid?>.Default.GetHashCode(StartAt);
                 hashCode = (hashCode * -1521134295) + EqualityComparer<Guid?>.Default.GetHashCode(Id);
                 hashCode = (hashCode * -1521134295) + EqualityComparer<HashSet<ExceptionLogLevel>>.Default.GetHashCode(LogLevels);
+                hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Host);
+                hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Url);
                 return (hashCode * -1521134295) + Sort.GetHashCode();
             }
         }
@@ -265,6 +269,14 @@ Select e.Id,
             {
                 AddClause("(" + string.Join(" OR ", search.LogLevels.Select(logLevel => "LogLevel = " + (short)logLevel)) + ")");
             }
+            if (search.Host.HasValue())
+            {
+                AddClause("Host Like @Host");
+            }
+            if (search.Url.HasValue())
+            {
+                AddClause("Url Like @Url");
+            }
             if (mode == QueryMode.Delete)
             {
                 AddClause("IsProtected = 0");
@@ -300,7 +312,9 @@ Select e.Id,
                 query = "%" + search.SearchQuery + "%",
                 search.StartAt,
                 search.Count,
-                search.Id
+                search.Id,
+                search.Host,
+                search.Url
             });
         }
 

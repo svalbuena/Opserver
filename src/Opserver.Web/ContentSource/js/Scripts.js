@@ -1054,7 +1054,9 @@ Status.Exceptions = (function () {
             group: options.group,
             log: options.log,
             sort: options.sort,
-            logLevels: options.logLevels
+            logLevels: options.logLevels,
+            host: options.host,
+            url: options.url
         };
 
         // TODO: Set refresh params
@@ -1445,12 +1447,41 @@ Status.Exceptions = (function () {
             .get();
     }
 
+    function getHostFilterValue() {
+        return $('#hostFilterInput').val();
+    }
+
+    function getUrlFilterValue() {
+        return $('#urlFilterInput').val();
+    }
+
     $(document).on('submit', '#exceptionFiltersForm', function (event) {
-        let selectedLogLevels = getSelectedLogLevels();
         let searchParams = new URLSearchParams(window.location.search);
-        searchParams.set("logLevels", selectedLogLevels.join(','));
+        let selectedLogLevels = getSelectedLogLevels();
+        if (selectedLogLevels.length === 0) {
+            searchParams.delete("logLevels");
+        } else {
+            searchParams.set("logLevels", selectedLogLevels.join(','));
+        }
+        let host = getHostFilterValue();
+        if (host === null || host === '') {
+            searchParams.delete("host");
+        } else {
+            searchParams.set("host", host);
+        }
+        let url = getUrlFilterValue();
+        if (url === null || url === '') {
+            searchParams.delete("url");
+        } else {
+            searchParams.set("url", url);
+        }
+
         let urlWithoutSearchParams = window.location.href.split('?')[0];
-        location.href = urlWithoutSearchParams + '?' + searchParams.toString();
+        if (searchParams === null || searchParams.toString() === '') {
+            location.href = urlWithoutSearchParams;
+        } else {
+            location.href = urlWithoutSearchParams + '?' + searchParams.toString();
+        }
         event.preventDefault();
     });
 
