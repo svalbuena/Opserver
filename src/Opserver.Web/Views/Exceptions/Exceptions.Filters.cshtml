@@ -1,6 +1,17 @@
 ﻿@model ExceptionsModel
 
 <form class="navbar-form" id="exceptionFiltersForm">
+    @{
+        string tooltipMessage = "This filter supports wildcards by using '*'. They may slow down queries, leading wildcards are usually slower than trailing ones.";
+    }
+    <div class="form-group">
+        <i class="fa fa-question-circle" aria-hidden="true" data-toggle="tooltip" title="@tooltipMessage"></i>
+        <input id="hostFilterInput" type="text" class="form-control input-sm" placeholder="Filter by Host" value="@(Model.Host == null ? "" : Model.Host)">
+    </div>
+    <div class="form-group">
+        <i class="fa fa-question-circle" aria-hidden="true" data-toggle="tooltip" title="@tooltipMessage"></i>
+        <input id="urlFilterInput" type="text" class="form-control input-sm" placeholder="Filter by Url" value="@(Model.Url == null ? "" : Model.Url)">
+    </div>
     <div class="form-group">
         <div class="dropdown">
             <button class="btn btn-xs btn-default dropdown-toggle" type="button" id="logLevelDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

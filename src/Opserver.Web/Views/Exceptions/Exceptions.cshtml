@@ -25,7 +25,9 @@
                 enablePreviews: @Module.Settings.EnablePreviews.ToJson(),
                 showDeleted: @Model.ShowDeleted.ToJson(),
                 search: @Model.Search.ToJson(),
-                logLevels: '@Model.CommaJoinedSelectedLogLevels()'
+                logLevels: '@Model.CommaJoinedSelectedLogLevels()',
+                host: '@Model.Host',
+                url: '@Model.Url'
             });
         });
     </script>

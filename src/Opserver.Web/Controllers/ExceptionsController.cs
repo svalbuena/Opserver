@@ -30,6 +30,8 @@ namespace Opserver.Controllers
         private ExceptionSorts CurrentSort;
         private HashSet<ExceptionLogLevel> CurrentExceptionLogLevels;
         private static readonly HashSet<ExceptionLogLevel> DefaultExceptionLogLevels = new HashSet<ExceptionLogLevel>() { ExceptionLogLevel.Critical, ExceptionLogLevel.Error };
+        private string CurrentHost;
+        private string CurrentUrl;
 
         public ExceptionsController(ExceptionsModule module, IOptions<OpserverSettings> settings) : base(module, settings) { }
 
@@ -42,6 +44,8 @@ namespace Opserver.Controllers
             CurrentSimilarId = GetParam("similar").HasValue() && Guid.TryParse(GetParam("similar"), out var similarGuid) ? similarGuid : (Guid?)null;
             Enum.TryParse(GetParam("sort"), out CurrentSort);
             CurrentExceptionLogLevels = GetCurrentExceptionLogLevels();
+            CurrentHost = GetParam("host")?.Trim();
+            CurrentUrl = GetParam("url")?.Trim();
 
             if (CurrentLog.HasValue())
             {
@@ -77,7 +81,9 @@ namespace Opserver.Controllers
                 Log = CurrentLog,
                 Sort = CurrentSort,
                 Id = CurrentId,
-                LogLevels = CurrentExceptionLogLevels
+                LogLevels = CurrentExceptionLogLevels,
+                Host = CurrentHost,
+                Url = CurrentUrl
             };
 
             if (GetParam("q").HasValue())
@@ -138,7 +144,9 @@ namespace Opserver.Controllers
                 Log = log,
                 Sort = CurrentSort,
                 Errors = errors,
-                SelectedLogLevels = CurrentExceptionLogLevels
+                SelectedLogLevels = CurrentExceptionLogLevels,
+                Host = CurrentHost,
+                Url = CurrentUrl
             };
         }
 
